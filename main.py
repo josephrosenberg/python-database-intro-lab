@@ -15,8 +15,14 @@
 # limitations under the License.
 #
 import webapp2
+import jinja2
 from google.appengine.ext import ndb
 
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 class Student(ndb.Model):
     print "Making new Student"
@@ -36,13 +42,24 @@ class MainHandler(webapp2.RequestHandler):
         student_data = student_query.fetch()
         students_string = ""
         for student in student_data:
-            students_string = "{0}{1}:{2}, " .format(students_string, student.name, student.university)
+            students_string = "{0}{1}:{2}, ".format(students_string, student.name, student.university)
             print students_string
         students_string = students_string[:-2]
         print students_string
-        self.response.write('Hello world! ' + students_string)
+        # self.response.write('Hello world! ' + students_string)
+        template = JINJA_ENVIRONMENT.get_template('index.html')
+        self.response.write(template.render(template_values))
+
+    def post(self):
+        name = self.request.get('name')
+        univ = self.request.get('university')
+        print "Got student {0}:{1}".format(name, univ)
+        student = Student(name=name, university=univ)
+        student.put()
+
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainHandler),
+    ('/sign', MainHandler)
 ], debug=True)
