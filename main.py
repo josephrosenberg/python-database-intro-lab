@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
 import webapp2
 import jinja2
 from google.appengine.ext import ndb
@@ -41,18 +42,23 @@ class MainHandler(webapp2.RequestHandler):
         student_query = Student.query()
         student_data = student_query.fetch()
         students_string = ""
-        for student in student_data:
-            students_string = "{0}{1}:{2}, ".format(students_string, student.name, student.university)
-            print students_string
-        students_string = students_string[:-2]
-        print students_string
+        # for student in student_data:
+        #     students_string = "{0}{1}:{2}, ".format(students_string, student.name, student.university)
+        #     print students_string
+        # students_string = students_string[:-2]
+        # print students_string
+
+        template_values = {
+            'students' : student_data
+        }
+
         # self.response.write('Hello world! ' + students_string)
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 
     def post(self):
         name = self.request.get('name')
-        univ = self.request.get('university')
+        univ = self.request.get('univ')
         print "Got student {0}:{1}".format(name, univ)
         student = Student(name=name, university=univ)
         student.put()
