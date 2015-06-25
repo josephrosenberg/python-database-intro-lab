@@ -2,25 +2,19 @@
 {% autoescape true %}
 <html>
   <body>
+    <ul>
     {% for student in students %}
-      <p>{{ student.name }} : {{ student.university }}
+      <li>{{ student.name }} : {{ student.university }}</li>
     {% endfor %}
-
-    <form action="/sign" method="post">
-      <div>Name: <input name="name"></input></div>
-      <div>University: <input name="univ"></input></div>
-      <div><input type="submit" value="Sign Guestbook"></div>
-    </form>
+    </ul>
 
     <hr>
 
-    <form>Guestbook name:
-      <input value="{{ guestbook_name }}" name="guestbook_name">
-      <input type="submit" value="switch">
+    <form action="/" method="post">
+      <div>Name: <input name="name"></input></div>
+      <div>University: <input name="univ"></input></div>
+      <div><input type="submit" value="Add Student"></div>
     </form>
-
-    <a href="{{ url|safe }}">{{ url_linktext }}</a>
-
   </body>
 </html>
 {% endautoescape %}

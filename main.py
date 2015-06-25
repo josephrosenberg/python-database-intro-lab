@@ -32,13 +32,10 @@ class Student(ndb.Model):
     age = ndb.IntegerProperty(required=False)
 
 
-print "Running code"
-student = Student(name="Joseph", university="WashU")
-student.put()
-
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+        print "get"
         student_query = Student.query()
         student_data = student_query.fetch()
         students_string = ""
@@ -62,6 +59,8 @@ class MainHandler(webapp2.RequestHandler):
         print "Got student {0}:{1}".format(name, univ)
         student = Student(name=name, university=univ)
         student.put()
+        print "redirecting"
+        self.redirect('/')
 
 
 
