@@ -14,6 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+# Make sure to run app like so:
+# dev_appserver.py --datastore_consistency_policy=consistent [path_to_app_name]
+# in order to see changes reflected in the redirect immediately
+
+# To clear the datastore:
+# /usr/local/google_appengine/dev_appserver.py --clear_datastore=1 [path_to_app_name]
+
 import os
 import webapp2
 import jinja2
@@ -26,45 +34,30 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 
 class Student(ndb.Model):
-    print "Making new Student"
     name = ndb.StringProperty(required=True)
     university = ndb.StringProperty(required=True)
     age = ndb.IntegerProperty(required=False)
 
 
-
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        print "get"
         student_query = Student.query()
         student_data = student_query.fetch()
-        students_string = ""
-        # for student in student_data:
-        #     students_string = "{0}{1}:{2}, ".format(students_string, student.name, student.university)
-        #     print students_string
-        # students_string = students_string[:-2]
-        # print students_string
-
         template_values = {
             'students' : student_data
         }
-
-        # self.response.write('Hello world! ' + students_string)
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 
     def post(self):
         name = self.request.get('name')
         univ = self.request.get('univ')
-        print "Got student {0}:{1}".format(name, univ)
         student = Student(name=name, university=univ)
         student.put()
-        print "redirecting"
         self.redirect('/')
 
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler),
-    ('/sign', MainHandler)
+    ('/', MainHandler)
 ], debug=True)

@@ -2,6 +2,7 @@
 {% autoescape true %}
 <html>
   <body>
+    <h2>Student List</h2>
     <ul>
     {% for student in students %}
       <li>{{ student.name }} : {{ student.university }}</li>
